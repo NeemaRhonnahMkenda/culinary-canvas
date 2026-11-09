@@ -1,0 +1,31 @@
+/* Culinary Canvas theme, scoped to .cc (components/Shell.tsx). Always light. */
+.cc {
+  color-scheme: light;
+  --cc-bg: #fbf6ee;
+  --cc-card: #ffffff;
+  --cc-sunk: #f4ecdf;
+  --cc-ink: #2a1d17;
+  --cc-muted: #75655a;
+  --cc-line: #eadfce;
+  --cc-accent: #c2412a;
+  --cc-accent-ink: #ffffff;
+  --cc-accent-soft: #fbe4dc;
+  --cc-olive: #56662b;
+  --cc-olive-soft: #edf0da;
+  --cc-butter: #e9b949;
+  --cc-butter-soft: #fcf1d6;
+  --cc-display-face: var(--font-dm-serif);
+  background: var(--cc-bg);
+  color: var(--cc-ink);
+}
+.cc ::selection {
+  background: var(--cc-butter-soft);
+  color: var(--cc-ink);
+}
+.cc .grid > * {
+  min-width: 0;
+}
+/* Long recipe text reads better with a comfortable measure */
+.cc .recipe-text {
+  max-width: 68ch;
+}

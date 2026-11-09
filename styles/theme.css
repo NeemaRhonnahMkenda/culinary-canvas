@@ -1,0 +1,26 @@
+/*
+ * Tailwind tokens for Culinary Canvas. Import into the host's Tailwind entry CSS
+ * (after `@import "tailwindcss"`). Every token is prefixed cc- so it can sit next
+ * to the portfolio's and Waypoint's tokens without clashing. Values live in
+ * styles/culinary.css, scoped to the .cc wrapper.
+ */
+@source "../components";
+@source "../routes";
+@source "../lib";
+
+@theme inline {
+  --color-cc-bg: var(--cc-bg);
+  --color-cc-card: var(--cc-card);
+  --color-cc-sunk: var(--cc-sunk);
+  --color-cc-ink: var(--cc-ink);
+  --color-cc-muted: var(--cc-muted);
+  --color-cc-line: var(--cc-line);
+  --color-cc-accent: var(--cc-accent);
+  --color-cc-accent-ink: var(--cc-accent-ink);
+  --color-cc-accent-soft: var(--cc-accent-soft);
+  --color-cc-olive: var(--cc-olive);
+  --color-cc-olive-soft: var(--cc-olive-soft);
+  --color-cc-butter: var(--cc-butter);
+  --color-cc-butter-soft: var(--cc-butter-soft);
+  --font-cc-display: var(--cc-display-face);
+}

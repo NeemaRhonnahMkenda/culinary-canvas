@@ -1,0 +1,50 @@
+[
+  {
+    "title": "Soft Layered Chapati",
+    "category": "Fried",
+    "photo": "chapati",
+    "description": "Ingredients\n- 3 cups all-purpose flour\n- 1 tsp salt\n- 1 tbsp sugar\n- 3 tbsp oil, plus extra for brushing\n- About 1 cup warm water\n\nMethod\n1. Mix the flour, salt and sugar. Add the oil and rub it in with your fingers.\n2. Add warm water a little at a time and knead for 8 to 10 minutes into a soft, smooth dough. Cover and rest for 30 minutes.\n3. Divide into 8 balls. Roll each one thin, brush with oil, roll it up like a rope and coil it into a snail. Rest 10 minutes.\n4. Roll each coil into a circle and cook in a hot dry pan, about 1 minute a side, then brush lightly with oil and cook until golden spots appear.\n5. Stack the chapatis under a clean towel so they stay soft."
+  },
+  {
+    "title": "Coconut Bean Stew",
+    "category": "Boiled",
+    "photo": "",
+    "description": "Ingredients\n- 2 cups cooked red kidney beans\n- 1 onion, chopped\n- 2 tomatoes, grated\n- 2 cloves garlic, crushed\n- 1 tsp curry powder\n- 1 can (400 ml) coconut milk\n- Salt, fresh coriander\n\nMethod\n1. Soften the onion in a little oil, then add the garlic and curry powder for a minute.\n2. Stir in the tomatoes and cook down into a thick sauce.\n3. Add the beans and coconut milk and simmer gently for 15 minutes, until creamy.\n4. Season with salt, scatter with coriander and serve with rice or chapati."
+  },
+  {
+    "title": "Lemon Herb Baked Chicken",
+    "category": "Baked",
+    "photo": "baked_webp",
+    "description": "Ingredients\n- 6 chicken thighs\n- 2 tbsp olive oil\n- Juice and zest of 1 lemon\n- 3 cloves garlic, crushed\n- 1 tsp paprika\n- 1 tsp dried thyme\n- Salt and pepper\n\nMethod\n1. Heat the oven to 200°C (400°F).\n2. Mix the oil, lemon, garlic, paprika, thyme, salt and pepper, and coat the chicken well.\n3. Bake on a tray for 35 to 40 minutes, until the skin is crisp and the juices run clear.\n4. Rest for 5 minutes and spoon the pan juices over before serving."
+  },
+  {
+    "title": "One-Pot Creamy Garlic Spaghetti",
+    "category": "Boiled",
+    "photo": "spaghetti2",
+    "description": "Ingredients\n- 250 g spaghetti\n- 2 tbsp butter\n- 4 cloves garlic, sliced\n- 3 cups chicken or vegetable stock\n- 1/2 cup cream\n- 1/2 cup grated parmesan\n- Black pepper, parsley\n\nMethod\n1. Melt the butter in a wide pot and fry the garlic gently until fragrant.\n2. Add the stock and bring to the boil, then add the spaghetti.\n3. Simmer, stirring often, until the pasta is tender and most of the liquid is absorbed (about 12 minutes).\n4. Stir in the cream and parmesan, season with pepper and finish with parsley."
+  },
+  {
+    "title": "Masala Chips",
+    "category": "Fried",
+    "photo": "fries",
+    "description": "Ingredients\n- 4 large potatoes, cut into chips\n- Oil for frying\n- 1 onion, finely chopped\n- 2 tomatoes, finely chopped\n- 1 tsp garam masala\n- 1/2 tsp chilli powder\n- 2 tbsp tomato sauce, lemon juice, coriander\n\nMethod\n1. Soak the chips in cold water for 20 minutes, then dry them very well.\n2. Fry at a medium heat until soft, drain, then fry again in hotter oil until crisp and golden.\n3. In a pan, cook the onion, tomatoes and spices into a thick sauce with the tomato sauce.\n4. Toss the hot chips in the sauce, squeeze over lemon and top with coriander."
+  },
+  {
+    "title": "Classic Banana Bread",
+    "category": "Baked",
+    "photo": "",
+    "description": "Ingredients\n- 3 very ripe bananas\n- 1/3 cup melted butter\n- 3/4 cup sugar\n- 1 egg\n- 1 tsp vanilla\n- 1 tsp baking soda, pinch of salt\n- 1 1/2 cups flour\n\nMethod\n1. Heat the oven to 175°C (350°F) and grease a loaf tin.\n2. Mash the bananas, then stir in the butter, sugar, egg and vanilla.\n3. Fold in the baking soda, salt and flour until just combined.\n4. Bake for 55 to 60 minutes, until a skewer comes out clean. Cool before slicing."
+  },
+  {
+    "title": "Cardamom Mandazi",
+    "category": "Fried",
+    "photo": "",
+    "description": "Ingredients\n- 3 cups flour\n- 1/3 cup sugar\n- 2 tsp baking powder\n- 1/2 tsp ground cardamom\n- 1 cup coconut milk\n- 1 egg\n- Oil for frying\n\nMethod\n1. Mix the dry ingredients, then add the coconut milk and egg and knead into a soft dough.\n2. Cover and rest for 30 minutes.\n3. Roll out about 1 cm thick and cut into triangles.\n4. Fry in medium-hot oil, turning, until puffed and golden. Drain and serve warm with chai."
+  },
+  {
+    "title": "Spiced Sweet Potato Pie",
+    "category": "Baked",
+    "photo": "pie",
+    "description": "Ingredients\n- 1 ready-made pie crust\n- 2 cups mashed cooked sweet potato\n- 1/2 cup brown sugar\n- 2 eggs\n- 3/4 cup milk\n- 2 tbsp melted butter\n- 1 tsp cinnamon, 1/4 tsp nutmeg, 1 tsp vanilla\n\nMethod\n1. Heat the oven to 180°C (350°F) and line a pie dish with the crust.\n2. Whisk everything else together until smooth.\n3. Pour into the crust and bake for 50 to 55 minutes, until just set in the middle.\n4. Cool completely before slicing."
+  }
+]

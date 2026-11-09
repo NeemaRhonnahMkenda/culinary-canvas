@@ -1,0 +1,31 @@
+# Every push to main rebuilds the portfolio on Vercel, which pulls this repo
+# into its build (see the portfolio's scripts/fetch-projects.mjs).
+#
+# Setup (once):
+#   1. Vercel → portfolio project → Settings → Git → Deploy Hooks → create one for branch "main"
+#   2. GitHub → this repo → Settings → Secrets and variables → Actions → New repository secret
+#        Name: PORTFOLIO_DEPLOY_HOOK   Value: the hook URL from step 1
+# The hook URL is a secret: anyone who has it can trigger builds.
+name: Redeploy portfolio
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  redeploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger the portfolio's Vercel deploy hook
+        env:
+          HOOK: ${{ secrets.PORTFOLIO_DEPLOY_HOOK }}
+        run: |
+          if [ -z "$HOOK" ]; then
+            echo "PORTFOLIO_DEPLOY_HOOK secret is not set; skipping."
+            exit 0
+          fi
+          curl -fsS -X POST "$HOOK" > /dev/null
+          echo "Portfolio redeploy triggered."
