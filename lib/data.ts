@@ -10,7 +10,7 @@ const K = {
   recipe: (id: string) => `cc:recipe:${id}`,
   img: (id: string) => `cc:img:${id}`,
   index: "cc:recipes", // sorted set: recipe ids by creation time
-  seeded: "cc:seeded:v1",
+  seeded: "cc:seeded:v2",
 };
 
 export function publicUser(u: User | null): PublicUser | null {
@@ -50,17 +50,29 @@ async function usersById(ids: string[]) {
 
 /* ---------- seed: original demo recipes on first use ---------- */
 
+const SEED_AUTHOR = "culinarycanvas";
+
 async function ensureSeeded() {
   if (await kv().get(K.seeded)) return;
   if (!(await kv().set(K.seeded, "1", { nx: true }))) return; // another request is seeding
-  const authorId = "culinarycanvas";
+  const authorId = SEED_AUTHOR;
   const author: User = { id: authorId, username: "culinarycanvas", firstName: "Culinary", lastName: "Canvas", passHash: "", createdAt: new Date().toISOString() };
   await kv().set(K.user(authorId), JSON.stringify(author));
   await kv().set(K.uname("culinarycanvas"), authorId, { nx: true });
+
+  // Replace demo recipes from an older seed; people's own recipes are untouched.
+  const oldIds = await kv().zrevrange(K.index, 0, 999);
+  const olds = await kv().mget(oldIds.map(K.recipe));
+  for (const raw of olds) {
+    if (!raw) continue;
+    const r = JSON.parse(raw) as Recipe;
+    if (r.authorId === SEED_AUTHOR) await deleteRecipe(r);
+  }
+
   const now = Date.now();
-  for (const [i, r] of (seed as { title: string; category: Category; description: string }[]).entries()) {
+  for (const [i, r] of (seed as { title: string; category: Category; description: string; photo?: string }[]).entries()) {
     const t = new Date(now - (i + 1) * 36e5 * 7).toISOString();
-    const rec: Recipe = { id: newId(10), title: r.title, category: r.category, description: r.description, imageId: null, authorId, createdAt: t, updatedAt: t };
+    const rec: Recipe = { id: newId(10), title: r.title, category: r.category, description: r.description, imageId: null, photo: r.photo, authorId, createdAt: t, updatedAt: t };
     await kv().set(K.recipe(rec.id), JSON.stringify(rec));
     await kv().zadd(K.index, Date.parse(t), rec.id);
   }
@@ -124,7 +136,8 @@ export async function updateRecipe(existing: Recipe, input: { title: string; cat
     if (existing.imageId) await kv().del(K.img(existing.imageId));
     imageId = input.image ? await storeImage(input.image) : null;
   }
-  const r: Recipe = { ...existing, title: input.title, category: input.category, description: input.description, imageId, updatedAt: new Date().toISOString() };
+  const photo = input.image === "keep" ? existing.photo : undefined;
+  const r: Recipe = { ...existing, title: input.title, category: input.category, description: input.description, imageId, photo, updatedAt: new Date().toISOString() };
   await kv().set(K.recipe(r.id), JSON.stringify(r));
   return r;
 }

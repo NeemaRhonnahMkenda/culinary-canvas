@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
-import { DM_Serif_Display } from "next/font/google";
+import { Open_Sans } from "next/font/google";
+import localFont from "next/font/local";
 import { Suspense } from "react";
 
-const dmSerif = DM_Serif_Display({ variable: "--font-dm-serif", weight: "400", subsets: ["latin"] });
+const openSans = Open_Sans({ variable: "--font-open-sans", weight: ["300", "400", "600", "700"], style: ["normal", "italic"], subsets: ["latin"] });
+// The original site's heading face, bundled so it works offline and in the portfolio.
+const hanskendrick = localFont({ src: "../assets/fonts/hanskendrick.woff2", variable: "--font-hanskendrick", display: "swap" });
 
 export const ccMetadata: Metadata = {
   title: { default: "Culinary Canvas · Share your recipes", template: "%s · Culinary Canvas" },
@@ -23,7 +26,7 @@ function Loading() {
  */
 export default function CulinaryShell({ children }: { children: React.ReactNode }) {
   return (
-    <div className={`cc ${dmSerif.variable} flex min-h-full flex-1 flex-col font-sans`}>
+    <div className={`cc ${openSans.variable} ${hanskendrick.variable} flex min-h-full flex-1 flex-col`}>
       <Suspense fallback={<Loading />}>{children}</Suspense>
     </div>
   );

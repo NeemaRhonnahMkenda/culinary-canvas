@@ -1,13 +1,20 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
+import bg from "../../assets/login-bg.jpg";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { ApiError, call, setMe } from "../../lib/client";
 import type { PublicUser } from "../../lib/types";
 import { to } from "../../lib/util";
+import Footer from "../Footer";
 import Header from "../Header";
-import { Button, Field, inputCls } from "../ui";
+import { Button, Field } from "../ui";
+
+/** White boxed inputs with an orange underline, as on the original login card. */
+const authInput =
+  "min-h-10 w-full border-0 border-b border-cc-accent/70 bg-white px-3 text-[15px] text-cc-ink outline-none focus:border-cc-accent focus:ring-2 focus:ring-cc-accent/25";
 
 /** Only allow in-app return paths like "/new" (never another site). */
 function safeNext(n: string | null) {
@@ -42,51 +49,55 @@ export default function Auth({ mode }: { mode: "login" | "signup" }) {
     }
   }
 
+  const title = mode === "login" ? "Log In" : "Sign Up";
   return (
     <>
       <Header />
-      <main className="grid flex-1 place-items-center px-4 py-12">
-        <div className="w-full max-w-md rounded-[1.75rem] border border-cc-line bg-cc-card p-6 shadow-sm sm:p-8">
-          <h1 className="font-cc-display text-4xl">{mode === "login" ? "Welcome back" : "Join the kitchen"}</h1>
-          <p className="mt-1 text-cc-muted">{mode === "login" ? "Log in to share and edit your recipes." : "Create an account to share your recipes."}</p>
+      <main className="relative grid flex-1 place-items-center overflow-hidden px-4 py-16 sm:py-24">
+        <Image src={bg} alt="" fill priority placeholder="blur" sizes="100vw" className="object-cover" />
+        <div className="absolute inset-0 bg-black/25" aria-hidden />
+        <div className="relative w-full max-w-[360px] rounded-lg bg-white/80 p-8 shadow-2xl backdrop-blur-sm sm:p-10">
+          <h1 className="font-cc-display text-[40px] leading-none text-cc-ink">{title}</h1>
           <form onSubmit={submit} className="mt-6 grid gap-4" noValidate>
             {mode === "signup" ? (
-              <div className="grid grid-cols-2 gap-3">
-                <Field label="First name" error={errors.firstName}>
-                  {(id, d) => <input id={id} aria-describedby={d} autoComplete="given-name" className={inputCls} value={f.firstName} onChange={set("firstName")} maxLength={40} />}
+              <>
+                <Field label="First name*" error={errors.firstName}>
+                  {(id, d) => <input id={id} aria-describedby={d} autoComplete="given-name" className={authInput} value={f.firstName} onChange={set("firstName")} maxLength={40} autoFocus />}
                 </Field>
                 <Field label="Last name" error={errors.lastName}>
-                  {(id, d) => <input id={id} aria-describedby={d} autoComplete="family-name" className={inputCls} value={f.lastName} onChange={set("lastName")} maxLength={40} />}
+                  {(id, d) => <input id={id} aria-describedby={d} autoComplete="family-name" className={authInput} value={f.lastName} onChange={set("lastName")} maxLength={40} />}
                 </Field>
-              </div>
+              </>
             ) : null}
-            <Field label="Username" error={errors.username} hint={mode === "signup" ? "Lowercase letters, numbers, dots or underscores" : undefined}>
+            <Field label="Username*" error={errors.username} hint={mode === "signup" ? "Lowercase letters, numbers, dots or underscores" : undefined}>
               {(id, d) => (
-                <input id={id} aria-describedby={d} autoComplete="username" autoCapitalize="none" spellCheck={false} className={inputCls} value={f.username} onChange={set("username")} maxLength={30} autoFocus />
+                <input id={id} aria-describedby={d} autoComplete="username" autoCapitalize="none" spellCheck={false} className={authInput} value={f.username} onChange={set("username")} maxLength={30} autoFocus={mode === "login"} />
               )}
             </Field>
-            <Field label="Password" error={errors.password} hint={mode === "signup" ? "At least 8 characters" : undefined}>
+            <Field label="Password*" error={errors.password} hint={mode === "signup" ? "At least 8 characters" : undefined}>
               {(id, d) => (
-                <input id={id} aria-describedby={d} type="password" autoComplete={mode === "login" ? "current-password" : "new-password"} className={inputCls} value={f.password} onChange={set("password")} maxLength={200} />
+                <input id={id} aria-describedby={d} type="password" autoComplete={mode === "login" ? "current-password" : "new-password"} className={authInput} value={f.password} onChange={set("password")} maxLength={200} />
               )}
             </Field>
             {formError ? (
-              <p role="alert" className="rounded-xl bg-cc-accent-soft px-4 py-3 text-sm font-medium text-cc-accent">
+              <p role="alert" className="bg-[#fdecea] px-3 py-2 text-sm font-semibold text-[#c0392b]">
                 {formError}
               </p>
             ) : null}
-            <Button type="submit" variant="primary" disabled={busy}>
-              {busy ? "One moment…" : mode === "login" ? "Log in" : "Create account"}
+            <Button type="submit" variant="dark" disabled={busy} className="justify-self-start rounded-none px-5">
+              {busy ? "One moment…" : title}
             </Button>
           </form>
-          <p className="mt-6 text-center text-sm text-cc-muted">
-            {mode === "login" ? "New here? " : "Already have an account? "}
-            <Link href={to(mode === "login" ? `/signup?next=${encodeURIComponent(next)}` : `/login?next=${encodeURIComponent(next)}`)} className="font-semibold text-cc-accent hover:underline">
-              {mode === "login" ? "Create an account" : "Log in"}
+          <p className="mt-6 text-sm text-cc-text">
+            {mode === "login" ? "Don't have an account? " : "Already have an account? "}
+            <Link href={to(mode === "login" ? `/signup?next=${encodeURIComponent(next)}` : `/login?next=${encodeURIComponent(next)}`)} className="font-semibold text-cc-accent hover:text-cc-accent-hover">
+              {mode === "login" ? "Sign up here" : "Log in here"}
             </Link>
+            .
           </p>
         </div>
       </main>
+      <Footer />
     </>
   );
 }

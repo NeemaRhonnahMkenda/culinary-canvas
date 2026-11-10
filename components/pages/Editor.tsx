@@ -8,7 +8,8 @@ import { CATEGORIES, type Category, type RecipeView } from "../../lib/types";
 import { cx, imageUrl, to } from "../../lib/util";
 import Header from "../Header";
 import { Icon } from "../icons";
-import { Button, CATEGORY_STYLE, Field, inputCls } from "../ui";
+import Footer from "../Footer";
+import { Button, Field, container, inputCls } from "../ui";
 
 const TEMPLATE = "Ingredients\n- \n- \n- \n\nMethod\n1. \n2. \n3. ";
 
@@ -96,106 +97,99 @@ export default function Editor({ mode }: { mode: "new" | "edit" }) {
   return (
     <>
       <Header />
-      <main className="mx-auto w-full max-w-3xl flex-1 px-4 pb-20 sm:px-8">
-        <h1 className="mt-10 font-cc-display text-4xl sm:text-5xl">{mode === "new" ? "Share a recipe" : "Edit recipe"}</h1>
-        <p className="mt-2 text-cc-muted">Plain text is fine: lines starting with “-” become a list, “1.” becomes numbered steps.</p>
+      <main className={`${container} flex-1 pt-6 pb-20`}>
+        <h1 className="font-cc-display text-[40px] leading-tight text-cc-ink sm:text-[52px]">{mode === "new" ? "Add a New Recipe" : "Edit Recipe"}</h1>
 
         {loading ? (
-          <div className="mt-8 h-96 animate-pulse rounded-[1.5rem] bg-cc-sunk" />
+          <div className="mt-8 h-96 animate-pulse bg-cc-sunk" />
         ) : (
-          <form onSubmit={save} className="mt-8 grid gap-6" noValidate>
-            <Field label="Title" error={errors.title}>
-              {(id, d) => <input id={id} aria-describedby={d} className={inputCls} value={title} maxLength={120} onChange={(e) => setTitle(e.target.value)} placeholder="e.g. Grandma's mandazi" autoFocus />}
+          <form onSubmit={save} className="mt-6 grid gap-7" noValidate>
+            <Field label="Recipe title*" error={errors.title}>
+              {(id, d) => <input id={id} aria-describedby={d} className={inputCls} value={title} maxLength={120} onChange={(e) => setTitle(e.target.value)} autoFocus />}
+            </Field>
+
+            <div className="flex items-center gap-3">
+              <label htmlFor="cc-category" className="text-sm">
+                Category*
+              </label>
+              <select
+                id="cc-category"
+                value={category}
+                onChange={(e) => setCategory(e.target.value as Category)}
+                className="h-9 border border-[#9b9b9b] bg-white px-2 text-[15px] text-cc-ink outline-none focus:border-cc-accent"
+              >
+                {CATEGORIES.map((c) => (
+                  <option key={c}>{c}</option>
+                ))}
+              </select>
+            </div>
+
+            <Field label="Recipe description*" error={errors.description} hint="Lines starting with “-” become a list and “1.” becomes numbered steps.">
+              {(id, d) => (
+                <textarea
+                  id={id}
+                  aria-describedby={d}
+                  rows={12}
+                  value={description}
+                  maxLength={12000}
+                  onChange={(e) => setDescription(e.target.value)}
+                  className={cx(inputCls, "resize-y py-3 leading-relaxed")}
+                />
+              )}
             </Field>
 
             <div>
-              <p className="mb-2 text-[13px] font-semibold">How is it cooked?</p>
-              <div role="radiogroup" aria-label="Cooking method" className="grid grid-cols-3 gap-3">
-                {CATEGORIES.map((c) => {
-                  const Ic = Icon[CATEGORY_STYLE[c].icon];
-                  return (
-                    <button
-                      key={c}
-                      type="button"
-                      role="radio"
-                      aria-checked={category === c}
-                      onClick={() => setCategory(c)}
-                      className={cx(
-                        "flex flex-col items-center gap-1.5 rounded-2xl border p-4 text-sm font-semibold transition",
-                        category === c ? "border-cc-accent bg-cc-accent-soft" : "border-cc-line bg-cc-card hover:border-cc-ink/30",
-                      )}
-                    >
-                      <Ic className="size-6" /> {c}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            <div>
-              <p className="mb-2 text-[13px] font-semibold">Photo (optional)</p>
-              <div className="grid gap-3 sm:grid-cols-[14rem_1fr] sm:items-center">
+              <p className="mb-3 text-sm">Recipe image</p>
+              <div className="flex flex-wrap items-center gap-4 border-b border-[#cfcfcf] pb-4">
                 <button
                   type="button"
                   onClick={() => fileRef.current?.click()}
-                  className="grid aspect-[4/3] place-items-center overflow-hidden rounded-2xl border-2 border-dashed border-cc-line bg-cc-card text-cc-muted hover:border-cc-accent"
+                  className="grid size-24 shrink-0 place-items-center overflow-hidden border border-dashed border-[#bdbdbd] bg-cc-sunk text-cc-muted hover:border-cc-accent"
+                  aria-label={preview ? "Change photo" : "Choose photo"}
                 >
                   {preview ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={preview} alt="Recipe photo preview" className="size-full object-cover" />
                   ) : (
-                    <span className="flex flex-col items-center gap-1 text-sm font-semibold">
-                      <Icon.Image className="size-7" /> Add a photo
-                    </span>
+                    <Icon.Image className="size-7" />
                   )}
                 </button>
-                <div className="flex flex-wrap gap-2">
-                  <Button icon="Image" onClick={() => fileRef.current?.click()}>
-                    {preview ? "Change photo" : "Choose photo"}
+                <div className="flex flex-wrap items-center gap-3">
+                  <Button onClick={() => fileRef.current?.click()} className="min-h-9 rounded-none px-4 text-sm">
+                    {preview ? "Change file" : "Choose file"}
                   </Button>
                   {preview ? (
-                    <Button variant="ghost" icon="X" onClick={() => setImage(null)}>
+                    <button type="button" onClick={() => setImage(null)} className="text-sm underline-offset-4 hover:text-cc-accent hover:underline">
                       Remove
-                    </Button>
-                  ) : null}
-                  <p className="w-full text-xs text-cc-muted">Resized on your device before uploading, so big phone photos are fine.</p>
-                  {errors.image ? <p className="w-full text-xs font-medium text-cc-accent">{errors.image}</p> : null}
+                    </button>
+                  ) : (
+                    <span className="text-sm text-cc-muted">No file chosen</span>
+                  )}
+                  <p className="w-full text-xs text-cc-muted">Optional. Big phone photos are resized on your device first. No photo? We&apos;ll use a default one.</p>
+                  {errors.image ? <p className="w-full text-xs font-semibold text-[#c0392b]">{errors.image}</p> : null}
                 </div>
               </div>
               <input ref={fileRef} type="file" accept="image/*" hidden onChange={(e) => pickPhoto(e.target.files?.[0])} />
             </div>
 
-            <Field label="Ingredients and method" error={errors.description}>
-              {(id, d) => (
-                <textarea
-                  id={id}
-                  aria-describedby={d}
-                  rows={16}
-                  value={description}
-                  maxLength={12000}
-                  onChange={(e) => setDescription(e.target.value)}
-                  className={cx(inputCls, "py-3 font-mono text-sm leading-relaxed")}
-                />
-              )}
-            </Field>
-
             {formError ? (
-              <p role="alert" className="rounded-xl bg-cc-accent-soft px-4 py-3 text-sm font-medium text-cc-accent">
+              <p role="alert" className="bg-[#fdecea] px-4 py-3 text-sm font-semibold text-[#c0392b]">
                 {formError}
               </p>
             ) : null}
 
-            <div className="flex flex-wrap justify-end gap-2">
-              <Link href={mode === "edit" && params.id ? to(`/recipes/${params.id}`) : to("/")} className="inline-flex min-h-11 items-center rounded-full px-5 text-sm font-semibold text-cc-muted hover:text-cc-ink">
+            <div className="flex flex-wrap items-center gap-5">
+              <Button type="submit" variant="primary" disabled={busy} className="rounded-none">
+                {busy ? "Saving…" : mode === "new" ? "Submit" : "Save changes"}
+              </Button>
+              <Link href={mode === "edit" && params.id ? to(`/recipes/${params.id}`) : to("/")} className="text-sm hover:text-cc-accent">
                 Cancel
               </Link>
-              <Button type="submit" variant="primary" icon="Check" disabled={busy}>
-                {busy ? "Saving…" : mode === "new" ? "Publish recipe" : "Save changes"}
-              </Button>
             </div>
           </form>
         )}
       </main>
+      <Footer />
     </>
   );
 }

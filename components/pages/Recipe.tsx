@@ -5,28 +5,30 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { call, getRecipes, useMe } from "../../lib/client";
 import type { RecipeView } from "../../lib/types";
-import { fmtDate, minutesToRead, to } from "../../lib/util";
+import { to } from "../../lib/util";
+import Footer from "../Footer";
 import Header from "../Header";
 import { Icon } from "../icons";
-import RecipeCard from "../RecipeCard";
 import RecipeText from "../RecipeText";
-import { Button, CategoryChip, Cover, displayName } from "../ui";
+import { LatestPosts } from "../Sidebar";
+import { Button, PeachBand, RecipePhoto, container, displayName, longDate } from "../ui";
 
 export default function RecipePage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const { user } = useMe();
-  const [recipe, setRecipe] = useState<RecipeView | null | undefined>(undefined);
-  const [more, setMore] = useState<RecipeView[]>([]);
+  const [loadedRecipe, setLoaded] = useState<{ id: string; recipe: RecipeView | null } | null>(null);
+  const recipe = loadedRecipe?.id === id ? loadedRecipe.recipe : undefined;
+  const [latest, setLatest] = useState<RecipeView[]>([]);
   const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     let alive = true;
     call<{ recipe: RecipeView }>(`/recipes/${encodeURIComponent(id)}`)
-      .then((r) => alive && setRecipe(r.recipe))
-      .catch(() => alive && setRecipe(null));
+      .then((r) => alive && setLoaded({ id, recipe: r.recipe }))
+      .catch(() => alive && setLoaded({ id, recipe: null }));
     getRecipes({})
-      .then((r) => alive && setMore(r.recipes.filter((x) => x.id !== id).slice(0, 3)))
+      .then((r) => alive && setLatest(r.recipes.filter((x) => x.id !== id).slice(0, 4)))
       .catch(() => {});
     return () => {
       alive = false;
@@ -50,65 +52,58 @@ export default function RecipePage() {
   return (
     <>
       <Header />
-      <main className="mx-auto w-full max-w-6xl flex-1 px-4 pb-20 sm:px-8">
-        <Link href={to("/")} className="mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-cc-muted hover:text-cc-ink">
-          <Icon.ArrowLeft className="size-4" /> All recipes
-        </Link>
-
+      <PeachBand>
         {recipe === undefined ? (
-          <div className="mt-6 h-96 animate-pulse rounded-[1.5rem] bg-cc-sunk" />
+          <div className="h-12 w-2/3 max-w-lg animate-pulse bg-white/60" />
+        ) : (
+          <h1 className="font-cc-display text-4xl leading-tight text-cc-ink sm:text-[54px]">{recipe ? recipe.title : "Recipe not found"}</h1>
+        )}
+      </PeachBand>
+
+      <main className={`${container} grid flex-1 gap-14 pt-6 pb-24 lg:grid-cols-[1fr_330px] lg:gap-12`}>
+        {recipe === undefined ? (
+          <div className="aspect-square animate-pulse bg-cc-sunk" />
         ) : recipe === null ? (
-          <div className="py-24 text-center">
-            <h1 className="font-cc-display text-4xl">Recipe not found</h1>
-            <p className="mt-2 text-cc-muted">It may have been deleted by its author.</p>
+          <div className="py-10">
+            <p>It may have been deleted by its author.</p>
+            <Link href={to("/categories")} className="mt-4 inline-block font-semibold text-cc-accent">
+              Browse all recipes
+            </Link>
           </div>
         ) : (
-          <article className="mt-6">
-            <header className="grid items-end gap-8 lg:grid-cols-[1.1fr_1fr]">
-              <div className="order-2 lg:order-1">
-                <CategoryChip c={recipe.category} />
-                <h1 className="mt-4 font-cc-display text-5xl leading-[1.02] sm:text-6xl">{recipe.title}</h1>
-                <p className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-cc-muted">
-                  <span className="inline-flex items-center gap-1.5">
-                    <Icon.User className="size-4" /> {displayName(recipe.author)}
-                  </span>
-                  <span>{fmtDate(recipe.createdAt)}</span>
-                  <span className="inline-flex items-center gap-1.5">
-                    <Icon.Clock className="size-4" /> {minutesToRead(recipe.description)} min read
-                  </span>
-                </p>
-                {mine ? (
-                  <div className="mt-6 flex flex-wrap gap-2">
-                    <Link href={to(`/recipes/${recipe.id}/edit`)} className="inline-flex min-h-11 items-center gap-2 rounded-full bg-cc-ink px-5 text-sm font-semibold text-cc-bg">
-                      <Icon.Pencil className="size-4" /> Edit
-                    </Link>
-                    <Button variant="danger" icon="Trash" disabled={deleting} onClick={remove}>
-                      {deleting ? "Deleting…" : "Delete"}
-                    </Button>
-                  </div>
-                ) : null}
-              </div>
-              <div className="order-1 aspect-[4/3] overflow-hidden rounded-[1.75rem] lg:order-2">
-                <Cover imageId={recipe.imageId} category={recipe.category} title={recipe.title} />
-              </div>
-            </header>
-
-            <div className="mt-12 grid gap-12 lg:grid-cols-[1fr_20rem]">
-              <RecipeText text={recipe.description} />
-              {more.length ? (
-                <aside>
-                  <h2 className="mb-4 font-cc-display text-2xl">Cook next</h2>
-                  <div className="grid gap-5 sm:grid-cols-3 lg:grid-cols-1">
-                    {more.map((r) => (
-                      <RecipeCard key={r.id} r={r} />
-                    ))}
-                  </div>
-                </aside>
-              ) : null}
+          <article className="min-w-0">
+            <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-1 text-[15px]">
+              <span className="inline-flex items-center gap-2">
+                <Icon.User className="size-4" /> Post by {displayName(recipe.author)}
+              </span>
+              <span className="inline-flex items-center gap-2">
+                <Icon.Calendar className="size-4" /> {longDate(recipe.createdAt)}
+              </span>
             </div>
+            <div className="mt-4 aspect-square overflow-hidden sm:aspect-[5/4]">
+              <RecipePhoto r={recipe} priority sizes="(min-width: 1024px) 730px, 100vw" />
+            </div>
+
+            {mine ? (
+              <div className="mt-6 flex flex-wrap gap-3">
+                <Link href={to(`/recipes/${recipe.id}/edit`)} className="btn-cc inline-flex h-11 items-center gap-2 rounded-sm px-6 font-semibold">
+                  <Icon.Pencil className="size-4" /> Edit
+                </Link>
+                <Button variant="danger" icon="Trash" disabled={deleting} onClick={remove}>
+                  {deleting ? "Deleting…" : "Delete"}
+                </Button>
+              </div>
+            ) : null}
+
+            <h2 className="mt-8 mb-5 font-cc-display text-4xl text-cc-ink sm:text-[46px]">Instructions</h2>
+            <RecipeText text={recipe.description} />
           </article>
         )}
+        <aside className="lg:pt-10">
+          <LatestPosts recipes={latest} />
+        </aside>
       </main>
+      <Footer />
     </>
   );
 }

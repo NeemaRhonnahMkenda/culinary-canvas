@@ -37,19 +37,19 @@ function parse(text: string): Block[] {
 
 export default function RecipeText({ text }: { text: string }) {
   return (
-    <div className="recipe-text space-y-4 text-[17px] leading-relaxed">
+    <div className="recipe-text space-y-4 text-base leading-relaxed">
       {parse(text).map((b, i) =>
         b.kind === "h" ? (
-          <h2 key={i} className="pt-4 font-cc-display text-2xl first:pt-0">
+          <h3 key={i} className="pt-3 font-cc-display text-[22px] text-cc-ink first:pt-0">
             {b.text.charAt(0).toUpperCase() + b.text.slice(1).toLowerCase()}
-          </h2>
+          </h3>
         ) : b.kind === "p" ? (
           <p key={i}>{b.text}</p>
         ) : b.kind === "ul" ? (
-          <ul key={i} className="space-y-2">
+          <ul key={i} className="space-y-1.5">
             {b.items.map((it, j) => (
               <li key={j} className="flex gap-3">
-                <span className="mt-2.5 size-1.5 shrink-0 rounded-full bg-cc-accent" aria-hidden />
+                <span className="mt-[11px] h-px w-3 shrink-0 bg-cc-accent" aria-hidden />
                 <span>{it}</span>
               </li>
             ))}
@@ -58,8 +58,8 @@ export default function RecipeText({ text }: { text: string }) {
           <ol key={i} className="space-y-3">
             {b.items.map((it, j) => (
               <li key={j} className="flex gap-3">
-                <span className="grid size-7 shrink-0 place-items-center rounded-full bg-cc-ink font-cc-display text-sm text-cc-bg">{j + 1}</span>
-                <span className="pt-0.5">{it}</span>
+                <span className="w-5 shrink-0 font-bold text-cc-accent">{j + 1}.</span>
+                <span>{it}</span>
               </li>
             ))}
           </ol>

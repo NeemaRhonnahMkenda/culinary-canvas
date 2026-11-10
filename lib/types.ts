@@ -51,6 +51,8 @@ export type Recipe = {
   category: Category;
   description: string;
   imageId: string | null;
+  /** Bundled photo for seeded recipes (key in lib/photos.ts). */
+  photo?: string;
   authorId: string;
   createdAt: string;
   updatedAt: string;

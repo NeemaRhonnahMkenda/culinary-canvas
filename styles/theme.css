@@ -12,15 +12,15 @@
   --color-cc-bg: var(--cc-bg);
   --color-cc-card: var(--cc-card);
   --color-cc-sunk: var(--cc-sunk);
+  --color-cc-peach: var(--cc-peach);
   --color-cc-ink: var(--cc-ink);
+  --color-cc-text: var(--cc-text);
   --color-cc-muted: var(--cc-muted);
   --color-cc-line: var(--cc-line);
   --color-cc-accent: var(--cc-accent);
+  --color-cc-accent-hover: var(--cc-accent-hover);
   --color-cc-accent-ink: var(--cc-accent-ink);
   --color-cc-accent-soft: var(--cc-accent-soft);
-  --color-cc-olive: var(--cc-olive);
-  --color-cc-olive-soft: var(--cc-olive-soft);
-  --color-cc-butter: var(--cc-butter);
-  --color-cc-butter-soft: var(--cc-butter-soft);
   --font-cc-display: var(--cc-display-face);
+  --font-cc-body: var(--cc-body-face);
 }

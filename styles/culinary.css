@@ -1,31 +1,51 @@
-/* Culinary Canvas theme, scoped to .cc (components/Shell.tsx). Always light. */
+/*
+ * Culinary Canvas theme, scoped to .cc (components/Shell.tsx). Always light.
+ * Matches the original Django site: white pages, peach bands, orange buttons,
+ * Open Sans for text and the "hanskendrick" display face for headings.
+ */
 .cc {
   color-scheme: light;
-  --cc-bg: #fbf6ee;
+  --cc-bg: #ffffff;
   --cc-card: #ffffff;
-  --cc-sunk: #f4ecdf;
-  --cc-ink: #2a1d17;
-  --cc-muted: #75655a;
-  --cc-line: #eadfce;
-  --cc-accent: #c2412a;
+  --cc-sunk: #f4f4f4;
+  --cc-peach: #fdefe6;
+  --cc-ink: #111111;
+  --cc-text: #585757;
+  --cc-muted: #9a9a9a;
+  --cc-line: #e4e4e4;
+  --cc-accent: #ff6f00;
+  --cc-accent-hover: #ff8c33;
   --cc-accent-ink: #ffffff;
-  --cc-accent-soft: #fbe4dc;
-  --cc-olive: #56662b;
-  --cc-olive-soft: #edf0da;
-  --cc-butter: #e9b949;
-  --cc-butter-soft: #fcf1d6;
-  --cc-display-face: var(--font-dm-serif);
+  --cc-accent-soft: #fff1e5;
+  --cc-display-face: var(--font-hanskendrick), "Open Sans", sans-serif;
+  --cc-body-face: var(--font-open-sans), "Open Sans", system-ui, sans-serif;
   background: var(--cc-bg);
-  color: var(--cc-ink);
+  color: var(--cc-text);
+  font-family: var(--cc-body-face);
 }
 .cc ::selection {
-  background: var(--cc-butter-soft);
+  background: var(--cc-peach);
   color: var(--cc-ink);
 }
 .cc .grid > * {
   min-width: 0;
 }
-/* Long recipe text reads better with a comfortable measure */
 .cc .recipe-text {
-  max-width: 68ch;
+  max-width: 72ch;
+}
+/* Orange buttons with the original's soft drop shadow */
+.cc .btn-cc {
+  background: var(--cc-accent);
+  color: var(--cc-accent-ink);
+  box-shadow: 0 6px 14px -4px rgb(255 111 0 / 0.45);
+  transition: background 0.15s ease;
+}
+.cc .btn-cc:hover {
+  background: var(--cc-accent-hover);
+}
+/* The original used default bold headings with this face. */
+.cc h1,
+.cc h2,
+.cc h3 {
+  font-weight: 700;
 }

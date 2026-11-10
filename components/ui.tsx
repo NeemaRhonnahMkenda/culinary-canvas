@@ -1,11 +1,16 @@
 "use client";
 
+import Image from "next/image";
 import { useId } from "react";
-import type { Category } from "../lib/types";
+import { DEFAULT_PHOTO, PHOTOS } from "../lib/photos";
+import type { Recipe } from "../lib/types";
 import { cx, imageUrl } from "../lib/util";
 import { Icon, type IconName } from "./icons";
 
 const focus = "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cc-accent";
+
+/** Page width used by the original site (Bootstrap container). */
+export const container = "mx-auto w-full max-w-[1140px] px-4 sm:px-6";
 
 export function Button({
   variant = "secondary",
@@ -13,18 +18,19 @@ export function Button({
   className,
   children,
   ...rest
-}: React.ButtonHTMLAttributes<HTMLButtonElement> & { variant?: "primary" | "secondary" | "ghost" | "danger"; icon?: IconName }) {
+}: React.ButtonHTMLAttributes<HTMLButtonElement> & { variant?: "primary" | "dark" | "secondary" | "ghost" | "danger"; icon?: IconName }) {
   const Ic = icon ? Icon[icon] : null;
   return (
     <button
       type="button"
       {...rest}
       className={cx(
-        "inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-5 text-sm font-semibold transition active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50",
-        variant === "primary" && "bg-cc-accent text-cc-accent-ink hover:brightness-110",
-        variant === "secondary" && "border border-cc-line bg-cc-card hover:border-cc-ink/40",
-        variant === "ghost" && "text-cc-muted hover:bg-cc-sunk hover:text-cc-ink",
-        variant === "danger" && "border border-cc-line bg-cc-card text-cc-accent hover:border-cc-accent",
+        "inline-flex min-h-11 items-center justify-center gap-2 rounded-sm px-6 text-[15px] font-semibold transition disabled:cursor-not-allowed disabled:opacity-50",
+        variant === "primary" && "btn-cc",
+        variant === "dark" && "bg-cc-ink text-white hover:bg-[#333]",
+        variant === "secondary" && "border border-cc-line bg-cc-card text-cc-ink hover:border-cc-ink/40",
+        variant === "ghost" && "text-cc-text hover:text-cc-ink",
+        variant === "danger" && "border border-cc-line bg-cc-card text-[#c0392b] hover:border-[#c0392b]",
         focus,
         className,
       )}
@@ -35,8 +41,9 @@ export function Button({
   );
 }
 
+/** Underlined inputs, like the original forms. */
 export const inputCls =
-  "min-h-11 w-full rounded-xl border border-cc-line bg-cc-card px-3.5 text-[15px] outline-none transition placeholder:text-cc-muted/60 focus:border-cc-accent focus:ring-4 focus:ring-cc-accent/15";
+  "min-h-11 w-full border-0 border-b border-[#cfcfcf] bg-transparent px-1 text-[15px] text-cc-ink outline-none transition placeholder:text-cc-muted focus:border-cc-accent";
 
 export function Field({
   label,
@@ -52,13 +59,13 @@ export function Field({
   const id = useId();
   const msgId = error || hint ? `${id}-msg` : undefined;
   return (
-    <div className="flex flex-col gap-1.5">
-      <label htmlFor={id} className="text-[13px] font-semibold">
+    <div className="flex flex-col gap-1">
+      <label htmlFor={id} className="text-sm text-cc-text">
         {label}
       </label>
       {children(id, msgId)}
       {error ? (
-        <p id={msgId} className="text-xs font-medium text-cc-accent">
+        <p id={msgId} className="text-xs font-semibold text-[#c0392b]">
           {error}
         </p>
       ) : hint ? (
@@ -70,42 +77,64 @@ export function Field({
   );
 }
 
-export const CATEGORY_STYLE: Record<Category, { icon: IconName; chip: string; art: string; blurb: string }> = {
-  Baked: { icon: "Baked", chip: "bg-cc-butter-soft text-[#8a6100]", art: "from-[#fcefd0] to-[#f3d189]", blurb: "Out of the oven" },
-  Boiled: { icon: "Boiled", chip: "bg-cc-olive-soft text-cc-olive", art: "from-[#eef1dc] to-[#c9d39a]", blurb: "From the pot" },
-  Fried: { icon: "Fried", chip: "bg-cc-accent-soft text-cc-accent", art: "from-[#fde6dc] to-[#f1a98f]", blurb: "Hot from the pan" },
-};
+/**
+ * The recipe's photo: an uploaded one, a bundled one for the demo recipes,
+ * or the default board (as the original did) when there is none.
+ */
+export function RecipePhoto({
+  r,
+  className,
+  sizes = "(min-width: 1024px) 360px, (min-width: 640px) 50vw, 100vw",
+  priority,
+}: {
+  r: Pick<Recipe, "imageId" | "photo" | "title">;
+  className?: string;
+  sizes?: string;
+  priority?: boolean;
+}) {
+  if (r.imageId) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img src={imageUrl(r.imageId)} alt={r.title} loading={priority ? "eager" : "lazy"} className={cx("size-full object-cover", className)} />
+    );
+  }
+  const src = (r.photo && PHOTOS[r.photo]) || DEFAULT_PHOTO;
+  return <Image src={src} alt={r.title} sizes={sizes} priority={priority} placeholder="blur" className={cx("size-full object-cover", className)} />;
+}
 
-export function CategoryChip({ c }: { c: Category }) {
-  const s = CATEGORY_STYLE[c];
-  const Ic = Icon[s.icon];
+/** Full-width peach band with a big heading, used on most pages of the original. */
+export function PeachBand({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
-    <span className={cx("inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wide", s.chip)}>
-      <Ic className="size-3.5" /> {c}
-    </span>
+    <section className={cx("bg-cc-peach", className)}>
+      <div className={cx(container, "py-14 sm:py-20")}>{children}</div>
+    </section>
   );
 }
 
-/** The recipe photo, or a warm illustrated placeholder for its cooking method. */
-export function Cover({ imageId, category, title, className }: { imageId: string | null; category: Category; title: string; className?: string }) {
-  if (imageId) {
-    return (
-      // eslint-disable-next-line @next/next/no-img-element
-      <img src={imageUrl(imageId)} alt={title} loading="lazy" className={cx("size-full object-cover", className)} />
-    );
-  }
-  const s = CATEGORY_STYLE[category];
-  const Ic = Icon[s.icon];
-  return (
-    <div className={cx("relative grid size-full place-items-center overflow-hidden bg-gradient-to-br", s.art, className)} role="img" aria-label={`${category} recipe, no photo`}>
-      <span className="absolute -top-6 -right-6 size-28 rounded-full bg-white/30" aria-hidden />
-      <span className="absolute -bottom-10 -left-8 size-36 rounded-full bg-white/20" aria-hidden />
-      <Ic className="relative size-14 text-cc-ink/40" />
-    </div>
-  );
+export function SideHeading({ children }: { children: React.ReactNode }) {
+  return <h2 className="mb-5 font-cc-display text-lg uppercase tracking-tight text-cc-ink">{children}</h2>;
+}
+
+/** Plain-text preview: "3 cups flour, 1 tsp salt, …" without headings, bullets or step numbers. */
+export function excerpt(text: string, max = 150) {
+  const s = text
+    .split(/\r?\n/)
+    .map((l) => l.trim().replace(/^([-*•]|\d+[.)])\s*/, ""))
+    .filter((l) => l && !/^(ingredients|method|instructions|directions|description|steps|notes?):?$/i.test(l))
+    .join(", ");
+  return s.length > max ? s.slice(0, max).replace(/[\s,]+\S*$/, "") + " …" : s;
 }
 
 export function displayName(u: { firstName: string; lastName: string; username: string } | null) {
   if (!u) return "Unknown cook";
   return [u.firstName, u.lastName].filter(Boolean).join(" ") || u.username;
+}
+
+/** "November 9, 2026", the original's date style. */
+export function longDate(iso: string) {
+  try {
+    return new Intl.DateTimeFormat("en-US", { month: "long", day: "numeric", year: "numeric" }).format(new Date(iso));
+  } catch {
+    return "";
+  }
 }
